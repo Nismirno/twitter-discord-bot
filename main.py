@@ -36,6 +36,7 @@ class StdOutListener(StreamListener):
             webhookURL = dataD['webhook-url']
             followedTwitterIDs = dataD['twitter-ids']
             content = ''
+            serverName = dataD['Server']
             if 'MentionEveryone' in dataD:
                 if dataD['MentionEveryone'] == 'true':
                     content = 'New tweet @everyone'
@@ -105,7 +106,7 @@ class StdOutListener(StreamListener):
                            footer_icon="https://cdn1.iconfinder.com/data/icons/iconza-circle-social/64/697029-twitter-512.png",
                            timestamp=datetime.strptime(data['created_at'], '%a %b %d %H:%M:%S +0000 %Y').isoformat(' '))
 
-                print(strftime("[%Y-%m-%d %H:%M:%S]", gmtime()), data['user']['screen_name'], 'twittered.')
+                print(strftime("[%Y-%m-%d %H:%M:%S]", gmtime()), data['user']['screen_name'], 'tweet sent to', serverName)
 
                 wh = Webhook(url=webhookURL,
                              username="{0} Bot".format(username),
@@ -183,7 +184,7 @@ if __name__ == '__main__':
     for element in authdata['Discord']:
         followedTwitterIDs.extend(x for x in element['twitter-ids'] if x not in followedTwitterIDs)
 
-    l = StdOutListener(dataD=authdata)
+    l = StdOutListener(dataD=authdata['Discord'])
     auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
