@@ -188,6 +188,6 @@ if __name__ == '__main__':
     auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
-    stream = Stream(auth, l)
+    stream = Stream(auth, l, tweet_mode='extended')
 
     stream.filter(follow=followedTwitterIDs)
