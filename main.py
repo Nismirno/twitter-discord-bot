@@ -40,14 +40,19 @@ class StdOutListener(StreamListener):
             if 'MentionEveryone' in dataD:
                 if dataD['MentionEveryone'] == 'true':
                     content = 'New tweet @everyone'
-            if (data['user']['id_str'] in dataD['twitter-ids'] and 'retweeted_status' not in data):
-                username = data['user']['screen_name']
+            if (data['user']['id_str'] in followedTwitterIDs and 'retweeted_status' not in data):
+                username = data['user']['name']
                 icon_url = data['user']['profile_image_url']
 
                 text = ''
                 if 'extended_tweet' in data:
+                    print('extended_tweet/full_text')
                     text = data['extended_tweet']['full_text']
+                elif 'full_text' in data:
+                    print('full_text')
+                    text = data['full_text']
                 else:
+                    print('text')
                     text = data['text']
 
                 for userMention in data['entities']['user_mentions']:
