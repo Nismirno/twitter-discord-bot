@@ -30,10 +30,10 @@ class StdOutListener(StreamListener):
                   'f23d6d', 'd9c36c', '2db3aa', 'b380ff', 'ff0022',
                   '333226', '005c73', '7c29a6']
 
-        newTweetPhrases = ['New tweet @{0}',
-                           'TSV posted! @{0}',
-                           '@{0} Updates are incoming',
-                           'Beware of headlights @{0}']
+        newTweetPhrases = ['New tweet <@&{0}>',
+                           'TSV posted! <@&{0}>',
+                           '<@&{0}> Updates are incoming',
+                           'Beware of headlights <@&{0}>']
 
         data = status._json
 
