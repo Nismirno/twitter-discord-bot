@@ -68,13 +68,10 @@ class StdOutListener(StreamListener):
 
                 text = ''
                 if "extended_tweet" in data:
-                    print("extended_tweet/full_text")
                     text = data["extended_tweet"]["full_text"]
                 elif "full_text" in data:
-                    print("full_text")
                     text = data["full_text"]
                 else:
-                    print("text")
                     text = data["text"]
 
                 for userMention in data["entities"]["user_mentions"]:
