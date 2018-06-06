@@ -3,14 +3,14 @@
 import json
 import requests
 import time
-from pprint import pprint
+
 
 class Webhook():
     def __init__(self, url, content="", username="", icon_url=""):
         """
         Initialize a Discord Webhook object.
         @param {String} url - The webhook url where to make requests.
-        @param {String} content - TODO: Document this variable usage.
+        @param {String} content - Plaintext content of the webhook message.
         @param {String} username - The username to use while sending data to the webhook, may be left blank.
         @param {String} icon_url - An icon url, may be left blank.
         """
@@ -20,40 +20,44 @@ class Webhook():
         self.icon_url = icon_url
         self.formatted = ""
         self.attachments = []
+        self.embed = []
 
-    def addAttachment(self, attachment):
+    def addEmbed(self, embed):
         """
-        Add a specified Attachment to self.attachments for later usage.
-        @param {Attachment} attachment - The Attachment object to append.
+        Add a specified embed to self.embed for later usage.
+        @param {Embed} embed - The Embed object to append.
         """
-        if isinstance(attachment, Embed):
-            self.attachments.append(attachment)
+        if isinstance(embed, Embed):
+            self.embed.append(embed)
         else:
-            raise Exception("The attachment is not a correct attachment object")
+            raise Exception("The embed is not a correct embed object")
 
     def format(self):
         """
         Format the current object as a valid JSON object.
         """
-        data = {"username": self.username, "content": self.content, "avatar_url": self.icon_url, "embeds": []}
+        data = {"username": self.username,
+                "content": self.content,
+                "avatar_url": self.icon_url,
+                "embeds": []}
 
-        for attachment in self.attachments:
-            att = {"author": attachment.author, "color": attachment.color, "description": attachment.description,
-                   "title": attachment.title, "url": attachment.url, "footer": attachment.footer,
-                   "timestamp": attachment.timestamp, "fields": []}
-            if attachment.type == "photo":
-                att["image"] = attachment.image
-            if attachment.type == "video":
-                att["video"] = attachment.video
+        for embed in self.embed:
+            em = {"author": embed.author, "color": embed.color, "description": embed.description,
+                   "title": embed.title, "url": embed.url, "footer": embed.footer,
+                   "timestamp": embed.timestamp, "fields": []}
+            if embed.type == "photo":
+                em["image"] = embed.image
+            if embed.type == "video":
+                em["video"] = embed.video
 
-            for field in attachment.fields:
+            for field in embed.fields:
                 f = {}
                 f["name"] = field.name
                 f["value"] = field.value
                 f["inline"] = field.inline
-                att["fields"].append(f)
+                em["fields"].append(f)
 
-            data["embeds"].append(att)
+            data["embeds"].append(em)
 
         self.formatted = json.dumps(data, indent=4)
 
@@ -62,7 +66,6 @@ class Webhook():
         Send the JSON formated object to the specified `self.url`.
         """
         self.format()
-        #print(self.formatted)
         result = requests.post(self.url, data=self.formatted, headers={"Content-Type": "application/json"})
         if 200 <= result.status_code <= 299 or result.text == "ok":
             return True
@@ -89,10 +92,11 @@ class Webhook():
         #else:
         #    raise Exception("Error on post : " + str(result))
 
+
 class Embed(classmethod):
     def __init__(self, **args):
         """
-        Initialize an Attachment object and fill the properties from given $args.
+        Initialize an Embed object and fill the properties from given $args.
         """
         self.author = {"name": args["author_name"] if "author_name" in args else "",
                        "url": args["author_url"] if "author_url" in args else "",
@@ -101,11 +105,14 @@ class Embed(classmethod):
         self.description = args["description"] if "description" in args else ""
         self.title = args["title"] if "title" in args else ""
         self.url = args["url"] if "url" in args else ""
-        if "media_type" in args:
-            if args["media_type"] == "photo":
-                self.image = {"url": args["media_url"]}
-            if args["media_type"] == "video":
-                self.video = {"url": args["media_url"]}
+        self.images = []
+        self.videos = []
+        if "msg_media" in args:
+            for media in args["msg_media"]:
+                if media["type"] == "photo":
+                    self.images.append({"url": media["url"]})
+                if media["type"] == "video":
+                    self.videos.append({"url": media["url"]})
         self.type = args["media_type"] if "media_type" in args else ""
         self.footer = {"text": args["footer"] if "footer" in args else "",
                        "icon_url": args["footer_icon"] if "footer_icon" in args else ""}
@@ -114,14 +121,15 @@ class Embed(classmethod):
 
     def addField(self, field):
         """
-        Add a field to the current Attachment object.
-        @param {Fields} field - The field object to add to this attachment.
+        Add a field to the current Embed object.
+        @param {Fields} field - The field object to add to this embed object.
         """
         if isinstance(field, Field):
 
             self.fields.append(field)
         else:
             raise Exception("The field is not a correct field object")
+
 
 class Field():
     def __init__(self, title="", value="", short=False):
