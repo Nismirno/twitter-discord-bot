@@ -64,6 +64,7 @@ class StdOutListener(StreamListener):
                 content = random.choice(newTweetPhrases).format(role)
             if (data["user"]["id_str"] in followedTwitterIDs and "retweeted_status" not in data):
                 username = data["user"]["name"]
+                screenName = data["user"]["screen_name"]
                 icon_url = data["user"]["profile_image_url"]
 
                 text = ''
@@ -130,7 +131,7 @@ class StdOutListener(StreamListener):
                            footer_icon="https://cdn1.iconfinder.com/data/icons/iconza-circle-social/64/697029-twitter-512.png",
                            timestamp=datetime.strptime(data["created_at"], "%a %b %d %H:%M:%S +0000 %Y").isoformat(" "))
 
-                print(strftime("[%Y-%m-%d %H:%M:%S]", gmtime()), data["user"]["screen_name"], "tweet sent to", serverName)
+                logger.info(f"{screenName} tweet sent to {serverName}")
 
                 wh = Webhook(url=webhookURL,
                              username="{0} Bot".format(username),
