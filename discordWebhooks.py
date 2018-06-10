@@ -106,8 +106,8 @@ class Embed(classmethod):
         self.description = args["description"] if "description" in args else ""
         self.title = args["title"] if "title" in args else ""
         self.url = args["url"] if "url" in args else ""
-        self.images = []
-        self.videos = []
+        self.image = []
+        self.video = []
         self.type = args["media_type"] if "media_type" in args else ""
         if self.type == "image":
             self.images.append(args["media_url"])
