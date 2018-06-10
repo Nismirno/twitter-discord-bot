@@ -106,13 +106,13 @@ class Embed(classmethod):
         self.description = args["description"] if "description" in args else ""
         self.title = args["title"] if "title" in args else ""
         self.url = args["url"] if "url" in args else ""
-        self.image = []
-        self.video = []
+        self.image = {}
+        self.video = {}
         self.type = args["media_type"] if "media_type" in args else ""
-        if self.type == "image":
-            self.images.append(args["media_url"])
+        if self.type == "photo":
+            self.image["url"] = args["media_url"]
         if self.type == "video":
-            self.videos.append(args["media_url"])
+            self.video["url"] = args["media_url"]
         self.footer = {"text": args["footer"] if "footer" in args else "",
                        "icon_url": args["footer_icon"] if "footer_icon" in args else ""}
         self.timestamp = args["timestamp"] if "timestamp" in args else 0
