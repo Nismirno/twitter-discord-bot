@@ -42,9 +42,10 @@ class Webhook():
                 "embeds": []}
 
         for embed in self.embed:
-            em = {"author": embed.author, "color": embed.color, "description": embed.description,
-                   "title": embed.title, "url": embed.url, "footer": embed.footer,
-                   "timestamp": embed.timestamp, "fields": []}
+            em = {"author": embed.author, "color": embed.color,
+                  "description": embed.description, "title": embed.title,
+                  "url": embed.url, "footer": embed.footer,
+                  "timestamp": embed.timestamp, "fields": []}
             if embed.type == "photo":
                 em["image"] = embed.image
             if embed.type == "video":
@@ -107,13 +108,11 @@ class Embed(classmethod):
         self.url = args["url"] if "url" in args else ""
         self.images = []
         self.videos = []
-        if "msg_media" in args:
-            for media in args["msg_media"]:
-                if media["type"] == "photo":
-                    self.images.append({"url": media["url"]})
-                if media["type"] == "video":
-                    self.videos.append({"url": media["url"]})
         self.type = args["media_type"] if "media_type" in args else ""
+        if self.type == "image":
+            self.images.append(args["media_url"])
+        if self.type == "video":
+            self.videos.append(args["media_url"])
         self.footer = {"text": args["footer"] if "footer" in args else "",
                        "icon_url": args["footer_icon"] if "footer_icon" in args else ""}
         self.timestamp = args["timestamp"] if "timestamp" in args else 0

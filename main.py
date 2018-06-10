@@ -110,7 +110,8 @@ class StdOutListener(StreamListener):
                             videoAlert = True
                             media_type = media["type"]
                         if media["type"] == "animated_gif" and media_type != "video":
-                            videoAlert = True
+                            media_url = media["media_url_https"]
+                            media_type = "photo"
 
                 if videoAlert:
                     text += " *[tweet has video]*"
@@ -137,7 +138,7 @@ class StdOutListener(StreamListener):
                              username="{0} Bot".format(username),
                              icon_url=icon_url,
                              content=content)
-                wh.addAttachment(at)
+                wh.addEmbed(at)
                 wh.post()
 
         return True
@@ -198,7 +199,7 @@ class StdOutListener(StreamListener):
 
 
 def onException(data):
-    url = data["Discord"][2]["webhook-url"]
+    url = data["Discord"][0]["webhook-url"]
     content = "<@177856625485414400> something went wrong! Check logs!"
     wh = Webhook(url=url,
                  username="TSV Bot",
