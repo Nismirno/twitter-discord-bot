@@ -208,6 +208,9 @@ def onException(data):
 
 
 def startStream(auth, listener, data):
+    followedTwitterIDs = []
+    for element in data['Discord']:
+        followedTwitterIDs.extend(x for x in element['twitter-ids'] if x not in followedTwitterIDs)
     while True:
         try:
             stream = Stream(auth, listener, tweet_mode='extended')
@@ -229,9 +232,6 @@ if __name__ == '__main__':
     CONSUMER_SECRET = authdata['Twitter']['consumer-secret']
     ACCESS_TOKEN = authdata['Twitter']['access-token']
     ACCESS_TOKEN_SECRET = authdata['Twitter']['access-token-secret']
-    followedTwitterIDs = []
-    for element in authdata['Discord']:
-        followedTwitterIDs.extend(x for x in element['twitter-ids'] if x not in followedTwitterIDs)
 
     l = StdOutListener(dataD=authdata['Discord'])
     auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
